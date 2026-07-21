@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = \App\Models\Event::with('category')->latest()->paginate(10);
+        $query = \App\Models\Event::with('category');
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+
+        $events = $query->latest()->paginate(10)->withQueryString();
         return view('admin.events.index', compact('events'));
     }
 

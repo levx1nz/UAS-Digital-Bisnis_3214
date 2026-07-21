@@ -103,6 +103,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('dashboard', [DashboardController::class, 'index']);
+        Route::get('/users', [DashboardController::class, 'users'])->name('users.index');
+        Route::get('/reviews', [DashboardController::class, 'reviews'])->name('reviews.index');
+        Route::delete('/reviews/{review}', [DashboardController::class, 'destroyReview'])->name('reviews.destroy');
         Route::delete('/users/{user}', [\App\Http\Controllers\Admin\DashboardController::class, 'destroyUser'])->name('users.destroy');
         
         Route::resource('events', AdminEventController::class);

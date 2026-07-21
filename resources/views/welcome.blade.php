@@ -59,26 +59,24 @@
         <p class="text-slate-500 font-medium">Jangan sampai ketinggalan acara seru minggu ini!</p>
     </div>
 
-    <div class="flex flex-wrap gap-2">
-        <a href="/" 
-           class="px-5 py-2 text-sm font-bold rounded-full transition-all duration-300 
-                  {{ !request('category') ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200' }}">
+    <div class="flex flex-wrap gap-2" id="category-filters">
+        <button type="button" data-category="all"
+        class="category-btn px-5 py-2 text-sm font-bold rounded-full transition-all duration-300 bg-indigo-600 text-white shadow-md">
             Semua
-        </a>
+        </button>
 
         @foreach($categories as $cat)
-        <a href="/?category={{ $cat->slug }}"
-           class="px-5 py-2 text-sm font-bold rounded-full transition-all duration-300 shadow-sm
-                  {{ request('category') == $cat->slug ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200' }}">
+        <button type="button" data-category="{{ $cat->slug }}"
+        class="category-btn px-5 py-2 text-sm font-bold rounded-full transition-all duration-300 shadow-sm bg-white text-slate-600 hover:bg-slate-50 border border-slate-200">
             {{ $cat->name }}
-        </a>
+        </button>
         @endforeach
     </div>
 </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="events-grid">
         @foreach($events as $event)
-        <div class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col">
+        <div data-category="{{ $event->category->slug }}" class="event-card group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col">
             <div class="relative overflow-hidden aspect-video"> 
                 <img src="{{ ($event->poster_path && Storage::disk('public')->exists($event->poster_path)) ? asset('storage/' . $event->poster_path) : 'https://placehold.co/200x600' }}" 
                     alt="{{ $event->title }}"
@@ -142,6 +140,40 @@
         @endforeach
     </div>
 </section>
+
+<p id="no-events" class="hidden text-center text-slate-400 font-bold py-16">Tidak ada event pada kategori ini.</p>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.category-btn');
+        const cards = document.querySelectorAll('.event-card');
+        const noEvents = document.getElementById('no-events');
+        const activeClasses = ['bg-indigo-600', 'text-white', 'shadow-md'];
+        const inactiveClasses = ['bg-white', 'text-slate-600', 'hover:bg-slate-50', 'border', 'border-slate-200'];
+
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const selected = btn.dataset.category;
+
+                buttons.forEach(function (b) {
+                    activeClasses.forEach(function (c) { b.classList.remove(c); });
+                    inactiveClasses.forEach(function (c) { b.classList.add(c); });
+                });
+                inactiveClasses.forEach(function (c) { btn.classList.remove(c); });
+                activeClasses.forEach(function (c) { btn.classList.add(c); });
+
+                let visible = 0;
+                cards.forEach(function (card) {
+                    const match = selected === 'all' || card.dataset.category === selected;
+                    card.classList.toggle('hidden', !match);
+                    if (match) visible++;
+                });
+
+                if (noEvents) noEvents.classList.toggle('hidden', visible !== 0);
+            });
+        });
+    });
+</script>
 
 <section id="partners" class="max-w-7xl mx-auto px-6 py-20 border-t border-slate-100">
         <div class="text-center mb-12">

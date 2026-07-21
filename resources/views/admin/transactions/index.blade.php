@@ -5,6 +5,22 @@
 @section('page_subtitle', 'Pantau arus kas dan penjualan tiket Anda.')
 
 @section('content')
+
+<div class="mb-6 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+    <form action="{{ route('admin.transactions.index') }}" method="GET" class="flex flex-wrap gap-4 items-center">
+        <div class="relative flex-1 min-w-[250px]">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Order ID, pembeli, atau event..." class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition-all outline-none text-sm font-medium">
+        </div>
+        <button type="submit" class="px-6 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors shadow-md">Cari</button>
+        @if(request('search'))
+            <a href="{{ route('admin.transactions.index') }}" class="px-6 py-3 bg-red-50 text-red-600 border border-red-100 rounded-xl font-bold hover:bg-red-100 transition-colors">Reset</a>
+        @endif
+    </form>
+</div>
+
 <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">

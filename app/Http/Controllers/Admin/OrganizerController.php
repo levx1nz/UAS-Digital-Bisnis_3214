@@ -4,17 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class OrganizerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $organizers = User::where('role', 'organizer')
-            ->withCount('events')->latest()->get();
+        $query = User::where('role', 'organizer')->withCount('events');
 
-        $pendingCount  = $organizers->where('account_status', 'pending')->count();
-        $approvedCount = $organizers->where('account_status', 'approved')->count();
-        $rejectedCount = $organizers->where('account_status', 'rejected')->count();
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('organizer_name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('email', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        $organizers = $query->latest()->get();
+
+        $baseQuery = User::where('role', 'organizer');
+        $pendingCount  = (clone $baseQuery)->where('account_status', 'pending')->count();
+        $approvedCount = (clone $baseQuery)->where('account_status', 'approved')->count();
+        $rejectedCount = (clone $baseQuery)->where('account_status', 'rejected')->count();
 
         return view('admin.organizers.index', compact('organizers', 'pendingCount', 'approvedCount', 'rejectedCount'));
     }

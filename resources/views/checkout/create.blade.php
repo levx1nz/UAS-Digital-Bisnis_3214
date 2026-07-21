@@ -141,27 +141,29 @@
         .then(r => r.json())
         .then(data => {
             msg.classList.remove('hidden', 'text-emerald-600', 'text-rose-600');
+            const rowServiceFee = document.getElementById('rowServiceFee');
+            const totalAmount   = document.getElementById('totalAmount');
+            const couponLabel   = document.getElementById('couponLabel');
+            const discountAmount = document.getElementById('discountAmount');
             if (data.valid) {
                 msg.classList.add('text-emerald-600');
                 msg.textContent = data.message;
-                rowDiscount.classList.remove('hidden');
-                document.getElementById('couponLabel').textContent = code.toUpperCase();
-                document.getElementById('discountAmount').textContent = new Intl.NumberFormat('id-ID').format(data.discount);
-                const rowServiceFee = document.getElementById('rowServiceFee');
+                if (rowDiscount) rowDiscount.classList.remove('hidden');
+                if (couponLabel) couponLabel.textContent = code.toUpperCase();
+                if (discountAmount) discountAmount.textContent = new Intl.NumberFormat('id-ID').format(data.discount);
                 if (data.free) {
-                    document.getElementById('totalAmount').textContent = 'GRATIS';
+                    if (totalAmount) totalAmount.textContent = 'GRATIS';
                     if (rowServiceFee) rowServiceFee.classList.add('hidden');
                 } else {
-                    document.getElementById('totalAmount').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.total);
+                    if (totalAmount) totalAmount.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.total);
                     if (rowServiceFee) rowServiceFee.classList.remove('hidden');
                 }
             } else {
                 msg.classList.add('text-rose-600');
                 msg.textContent = data.message;
-                rowDiscount.classList.add('hidden');
-                const rowServiceFeeReset = document.getElementById('rowServiceFee');
-                if (rowServiceFeeReset) rowServiceFeeReset.classList.remove('hidden');
-                document.getElementById('totalAmount').textContent = baseTotal;
+                if (rowDiscount) rowDiscount.classList.add('hidden');
+                if (rowServiceFee) rowServiceFee.classList.remove('hidden');
+                if (totalAmount) totalAmount.textContent = baseTotal;
             }
         })
         .catch(() => {

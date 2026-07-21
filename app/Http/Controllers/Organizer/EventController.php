@@ -16,11 +16,15 @@ class EventController extends Controller
         abort_if($event->organizer_id !== Auth::id(), 403, 'Anda tidak berhak mengelola event ini.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('category')
-            ->where('organizer_id', Auth::id())
-            ->latest()->paginate(10);
+        $query = Event::with('category')->where('organizer_id', Auth::id());
+
+        if ($request->has('search') && $request->search != '') {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+
+        $events = $query->latest()->paginate(10)->withQueryString();
         return view('organizer.events.index', compact('events'));
     }
 

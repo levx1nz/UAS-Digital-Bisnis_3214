@@ -10,12 +10,21 @@ use Illuminate\Validation\Rule;
 
 class CouponController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = Coupon::where('organizer_id', auth()->id())
-            ->with('event')
-            ->latest()
-            ->get();
+        $query = Coupon::where('organizer_id', auth()->id())->with('event');
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('code', 'LIKE', '%' . $search . '%')
+                    ->orWhereHas('event', function ($e) use ($search) {
+                        $e->where('title', 'LIKE', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $coupons = $query->latest()->get();
 
         return view('organizer.coupons.index', compact('coupons'));
     }
