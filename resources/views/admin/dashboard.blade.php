@@ -50,7 +50,6 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {{-- Area chart --}}
         <div class="lg:col-span-2 bg-white border border-slate-100 shadow-sm rounded-2xl p-6">
             <div class="flex items-start justify-between mb-6">
                 <div>
@@ -173,11 +172,11 @@
                             <td class="px-6 py-4 text-slate-600 max-w-[160px] truncate">{{ $trx->event->title ?? '-' }}</td>
                             <td class="px-6 py-4">
                                 @if(in_array($trx->status, ['settlement', 'success']))
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-700">Berhasil</span>
+                                <span class="px-2.5 py-1 rounded-md text-[11px] uppercase font-bold bg-emerald-100 text-emerald-700">SUCCESS</span>
                                 @elseif($trx->status === 'pending')
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 text-amber-700">Pending</span>
+                                <span class="px-2.5 py-1 rounded-md text-[11px] uppercase font-bold bg-amber-100 text-amber-700">PENDING</span>
                                 @else
-                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-100 text-rose-700">{{ ucfirst($trx->status) }}</span>
+                                <span class="px-2.5 py-1 rounded-md text-[11px] uppercase font-bold bg-rose-100 text-rose-700">{{ ucfirst($trx->status) }}</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right font-bold text-slate-900 whitespace-nowrap">Rp {{ number_format($trx->total_price, 0, ',', '.') }}</td>
