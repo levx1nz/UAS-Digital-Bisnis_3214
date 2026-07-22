@@ -71,7 +71,8 @@ Route::middleware('auth')->prefix('dashboard')->name('organizer.')->group(functi
 
     Route::middleware('organizer')->group(function () {
         Route::get('/', [OrganizerDashboardController::class, 'index'])->name('dashboard');
-
+        Route::get('/transaksi', [\App\Http\Controllers\Organizer\TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/laporan-pendapatan', [\App\Http\Controllers\Organizer\ReportController::class, 'index'])->name('reports.index');
         Route::get('/events', [OrganizerEventController::class, 'index'])->name('events.index');
         Route::get('/events/create', [OrganizerEventController::class, 'create'])->name('events.create');
         Route::post('/events', [OrganizerEventController::class, 'store'])->name('events.store');

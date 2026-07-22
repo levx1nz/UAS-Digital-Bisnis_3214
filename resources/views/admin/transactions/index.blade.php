@@ -14,8 +14,14 @@
             </div>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Order ID, pembeli, atau event..." class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 transition-all outline-none text-sm font-medium">
         </div>
+        <select name="status" onchange="this.form.submit()" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600 cursor-pointer">
+            <option value="">Semua Status</option>
+            <option value="success" @selected(request('status') === 'success')>Success</option>
+            <option value="pending" @selected(request('status') === 'pending')>Pending</option>
+            <option value="failed" @selected(request('status') === 'failed')>Lainnya</option>
+        </select>
         <button type="submit" class="px-6 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition-colors shadow-md">Cari</button>
-        @if(request('search'))
+        @if(request('search') || request('status'))
             <a href="{{ route('admin.transactions.index') }}" class="px-6 py-3 bg-red-50 text-red-600 border border-red-100 rounded-xl font-bold hover:bg-red-100 transition-colors">Reset</a>
         @endif
     </form>
